@@ -25,18 +25,26 @@ const SeniorTeamMappingMemr = () => {
     const [active, setActive] = useState(1);
     const [itemsPerPage] = useState(7); 
     const [totalPages, setTotalPages] = useState(1); 
+    const [searchTerm, setSearchTerm] = useState('');
+
     const { refetch, data: users = [] } = useQuery({
-        queryKey: ["users", active],
+        queryKey: ["users", active, searchTerm],
         queryFn: async () => {
             const res = await axiosPublic.get("/createUsers");
             const activeUser = res.data.filter(userPerson => userPerson.role === 'Senior Team Leader');
             const sortedData = activeUser.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            setIsLoading (false)
-            setTotalPages(Math.ceil(sortedData.length / itemsPerPage));
+            const filteredData = sortedData.filter(user => 
+                user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            setTotalPages(Math.ceil(filteredData.length / itemsPerPage));
             const startIndex = (active - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
-            return sortedData.slice(startIndex, endIndex);
-        },
+            
+            setIsLoading(false);
+            return filteredData.slice(startIndex, endIndex);
+        }
     });
 
     useEffect(() => {
@@ -107,17 +115,18 @@ const SeniorTeamMappingMemr = () => {
                     <div className='flex justify-between items-center'>
                         <Typography variant="h6" color="white">Senior team leader to mapping Senior</Typography>
                         <div id="input" className="relative outline-none">
-                            <input
-                                type="text"
-                                id="floating_outlined"
-                                className="block md:w-full w-36 text-sm outline-none h-[36px] px-4 text-slate-900 bg-white rounded-[8px] border border-slate-200 appearance-none focus:border-transparent focus:outline focus:outline-2 focus:outline-primary focus:ring-0 hover:border-brand-500-secondary- peer invalid:border-error-500 invalid:focus:border-error-500 overflow-ellipsis overflow-hidden text-nowrap pr-[48px]"
-                                placeholder="Search here...."
-                                value=""
-                            />
-                            <div className="absolute top-3 text-sm right-3">
-                                <FaSearch />
-                            </div>
-                        </div>
+                                    <input
+                                        type="text"
+                                        id="floating_outlined"
+                                        className="block md:w-full w-36 text-sm outline-none h-[36px] px-4 text-slate-900 bg-white rounded-[8px] border border-slate-200 appearance-none focus:border-transparent focus:outline focus:outline-2 focus:outline-primary focus:ring-0 hover:border-brand-500-secondary- peer invalid:border-error-500 invalid:focus:border-error-500 overflow-ellipsis overflow-hidden text-nowrap pr-[48px]"
+                                        placeholder="Search name or email ......"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}  // Handle search input change
+                                    />
+                                    <div className="absolute top-3 text-sm right-3">
+                                        <FaSearch />
+                                    </div>
+                                </div>
                     </div>
                 </CardHeader>
 

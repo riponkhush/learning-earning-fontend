@@ -15,12 +15,12 @@ const MappingStudent = () => {
     const [active, setActive] = useState(1);
     const [itemsPerPage] = useState(7); 
     const [totalPages, setTotalPages] = useState(1); 
+    const [searchTerm, setSearchTerm] = useState('');
     const { refetch, data: users = [] } = useQuery({
         queryKey: ["users", active],
         queryFn: async () => {
           const res = await axiosPublic.get("/councilorMappingStudent");
           const sortedData = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          console.log(sortedData)
           setLoading(false)
           setTotalPages(Math.ceil(sortedData.length / itemsPerPage));
           const startIndex = (active - 1) * itemsPerPage;
@@ -28,23 +28,31 @@ const MappingStudent = () => {
           return sortedData.slice(startIndex, endIndex);
         },
       });
+
+
+
+
       useEffect(() => {
-        if (users.length > 0) {  // Ensure 'users' has data
-          axiosPublic.get('/createUsers')
-            .then(res => {
-              const filteredData = res.data.filter(item => 
-                users.some(user => Array.isArray(user.studentId) && user.studentId?.includes(item._id)) // Use optional chaining and Array.isArray
-              );
-              console.log(filteredData);
-              setIsMan(filteredData);
-              setLoading(false);
-            })
-            .catch(error => {
-              console.error('Error fetching createUsers:', error);
-              setLoading(false);
-            });
+        if (users.length > 0) {
+            axiosPublic.get('/createUsers')
+                .then(res => {
+                    const filteredData = res.data.filter(item => 
+                        users.some(user => Array.isArray(user.studentId) && user.studentId?.includes(item._id))
+                    );
+                    const searchFilteredData = filteredData.filter(item =>
+                        item.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                        item.email?.toLowerCase().includes(searchTerm.toLowerCase())  
+                    );
+                    setIsMan(searchFilteredData); 
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error fetching createUsers:', error);
+                    setLoading(false);
+                });
         }
-      }, [users]);
+    }, [users, searchTerm]);  
+    
       
 
       const next = () => {
@@ -75,17 +83,18 @@ const MappingStudent = () => {
                             Mapping Students
                         </Typography>
                         <div id="input" className="relative outline-none">
-                        <input
-                            type="text"
-                            id="floating_outlined"
-                            className="block md:w-full w-36 text-sm outline-none h-[36px] px-4 text-slate-900 bg-white rounded-[8px] border border-slate-200 appearance-none focus:border-transparent focus:outline focus:outline-2 focus:outline-primary focus:ring-0 hover:border-brand-500-secondary- peer invalid:border-error-500 invalid:focus:border-error-500 overflow-ellipsis overflow-hidden text-nowrap pr-[48px]"
-                            placeholder="Search here...."
-                            value=""
-                        />
-                        <div className="absolute top-3 text-sm right-3">
-                        <FaSearch />
-                        </div>
-                        </div>
+                                    <input
+                                        type="text"
+                                        id="floating_outlined"
+                                        className="block md:w-full w-36 text-sm outline-none h-[36px] px-4 text-slate-900 bg-white rounded-[8px] border border-slate-200 appearance-none focus:border-transparent focus:outline focus:outline-2 focus:outline-primary focus:ring-0 hover:border-brand-500-secondary- peer invalid:border-error-500 invalid:focus:border-error-500 overflow-ellipsis overflow-hidden text-nowrap pr-[48px]"
+                                        placeholder="Search name or email ......"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}  // Handle search input change
+                                    />
+                                    <div className="absolute top-3 text-sm right-3">
+                                        <FaSearch />
+                                    </div>
+                                </div>
                         </div>
                 </CardHeader>
                 <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
@@ -171,7 +180,7 @@ const MappingStudent = () => {
                                     {index + 1}
                                 </IconButton>
                             ))}
-                        </div>
+                </div>
             </div>
         </div>
         </div>
