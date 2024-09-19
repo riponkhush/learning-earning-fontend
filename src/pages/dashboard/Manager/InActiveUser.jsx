@@ -97,7 +97,7 @@ const InActiveUser = () => {
                         <CardHeader className="mb-8 p-6 bg-blue-500">
                         <div className='flex justify-between items-center'>
                                 <Typography variant="h6" color="white">
-                                    In Active Student
+                                    In Active Student asdsd
                                 </Typography>
                                 <div id="input" className="relative outline-none">
                                 <input

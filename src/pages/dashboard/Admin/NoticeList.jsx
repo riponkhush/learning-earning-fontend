@@ -1,61 +1,65 @@
 import React, { useEffect, useState } from 'react';
 import { CardHeader, Spinner, Typography } from "@material-tailwind/react";
 import { FaSearch } from "react-icons/fa";
-import { Card, CardBody, Avatar, Chip } from "@material-tailwind/react";
-import { IconButton } from "@material-tailwind/react";
+import { Card, CardBody, Avatar } from "@material-tailwind/react";
 import useAxiosPublic from '@/hooks/axiosPublic';
 import { useQuery } from 'react-query';
-import Loader from '@/widgets/layout/Loader';
 import Swal from 'sweetalert2';
+import { IconButton } from "@material-tailwind/react";
 
-const NoticeList = () => {
+const ProductList = () => {
     const axiosPublic = useAxiosPublic();
     const [isLoading, setIsLoading] = useState(true);
     const [active, setActive] = useState(1);
     const [itemsPerPage] = useState(7); 
     const [totalPages, setTotalPages] = useState(1); 
+    const [searchTerm, setSearchTerm] = useState('');
 
-
-
-    const { refetch, data: isNotice = [] } = useQuery({
-        queryKey: ["isNotice", active],
+    const { refetch, data: isProducts = [] } = useQuery({
+        queryKey: ["isProducts", active, searchTerm],
         queryFn: async () => {
-            const res = await axiosPublic.get("/notices");
+            const res = await axiosPublic.get("/products");
             const sortedData = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            setIsLoading (false)
-            setTotalPages(Math.ceil(sortedData.length / itemsPerPage));
+
+            // Filter by search term (product title)
+            const filteredData = sortedData.filter((item) =>
+                item.product_title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            setIsLoading(false);
+            setTotalPages(Math.ceil(filteredData.length / itemsPerPage));
             const startIndex = (active - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
-            return sortedData.slice(startIndex, endIndex);
+            return filteredData.slice(startIndex, endIndex);
         },
     });
 
     const handleDelete = (id) => {
         Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!",
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
         }).then((result) => {
-          if (result.isConfirmed) {
-            axiosPublic.delete(`/notices/${id}`).then((res) => {
-              if (res.data.deletedCount > 0) {
-                refetch();
-                Swal.fire({
-                  title: "Deleted!",
-                  text: "Your file has been deleted.",
-                  icon: "success",
+            if (result.isConfirmed) {
+                axiosPublic.delete(`/products/${id}`).then((res) => {
+                    if (res.data.deletedCount > 0) {
+                        refetch();
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Your product has been deleted.",
+                            icon: "success",
+                        });
+                    }
                 });
-              }
-            });
-          }
+            }
         });
-      };
+    };
 
-      const next = () => {
+    const next = () => {
         if (active < totalPages) {
             setActive(active + 1);
         }
@@ -79,14 +83,18 @@ const NoticeList = () => {
                 <Card>
                     <CardHeader className="mb-8 md:p-6 p-3 bg-blue-500">
                         <div className='flex justify-between items-center'>
-                            <Typography variant="h6" color="white">Controller List</Typography>
+                            <Typography variant="h6" color="white">Product List</Typography>
                             <div id="input" className="relative outline-none">
                                 <input
                                     type="text"
                                     id="floating_outlined"
                                     className="block md:w-full w-36 text-sm outline-none h-[36px] px-4 text-slate-900 bg-white rounded-[8px] border border-slate-200 appearance-none focus:border-transparent focus:outline focus:outline-2 focus:outline-primary focus:ring-0 hover:border-brand-500-secondary- peer invalid:border-error-500 invalid:focus:border-error-500 overflow-ellipsis overflow-hidden text-nowrap pr-[48px]"
-                                    placeholder="Search here...."
-                                    value=""
+                                    placeholder="Search by product title..."
+                                    value={searchTerm}
+                                    onChange={(e) => {
+                                        setSearchTerm(e.target.value); // Update search term
+                                        setActive(1); // Reset to first page when searching
+                                    }}
                                 />
                                 <div className="absolute top-3 text-sm right-3">
                                     <FaSearch />
@@ -94,14 +102,16 @@ const NoticeList = () => {
                             </div>
                         </div>
                     </CardHeader>
-                    {
-                        isLoading ? (
-                            <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-screen"><Spinner className="h-10 w-10" color="blue" /></Typography>                         ) : (
-                            <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+                    {isLoading ? (
+                        <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-screen">
+                            <Spinner className="h-10 w-10" color="blue" />
+                        </Typography>
+                    ) : (
+                        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                             <table className="w-full min-w-[640px] table-auto">
                                 <thead>
                                     <tr>
-                                        {["title", "about notice", "post man", "Date", "action"].map((el) => (
+                                        {["Image", "Title", "Price", "Date", "Action"].map((el) => (
                                             <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                                                 <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
                                                     {el}
@@ -111,49 +121,48 @@ const NoticeList = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {isNotice.map(item => (
+                                    {isProducts.map(item => (
                                         <tr key={item._id}>
                                             <td className="py-3 px-5">
                                                 <div className="flex items-center gap-4">
+                                                    <Avatar src={item.image} alt="" size="sm" variant="rounded" />
                                                     <div>
-                                                        <Typography className="text-xs font-normal text-blue-gray-500">{item.news_title}</Typography>
+                                                        <Typography variant="small" color="blue-gray" className="font-semibold">{item.product_title}</Typography>
+                                                        <Typography className="text-xs font-normal text-blue-gray-500">{item.email}</Typography>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="py-3 px-5">
-                                                <Typography className="text-xs font-semibold text-blue-gray-600">{item.about_news}</Typography>
+                                                <Typography className="text-xs font-semibold text-blue-gray-600">$ {item.price}</Typography>
                                             </td>
                                             <td className="py-3 px-5">
-                                            <Typography className="text-xs font-semibold text-blue-gray-600">{item.uerEmail}</Typography>
+                                                <Typography className="text-xs font-semibold text-blue-gray-600">{item.createdAt}</Typography>
                                             </td>
                                             <td className="py-3 px-5">
-                                                <Typography className="text-xs font-semibold text-blue-gray-600">{item.dateTime}</Typography>
+                                                <Typography className="text-xs font-semibold text-blue-gray-600">{item.createdAt}</Typography>
                                             </td>
                                             <td className="py-3 px-5">
-                                            <Typography  onClick={() =>handleDelete(item._id)} className="text-xs font-semibold text-blue-gray-600">
-                                                    <button className='bg-red-400 px-6 text-white py-1 rounded-full hover:bg-red-600 duration-500 shadow-md drop-shadow-xl'>Delete</button>
-                                                </Typography>
+                                                <button onClick={() => handleDelete(item._id)} className='bg-red-400 px-6 text-white rounded-full hover:bg-red-600 duration-500 shadow-md drop-shadow-xl'>Delete</button>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </CardBody>
-                        )
-                    }
+                    )}
                 </Card>
                 <div className="flex justify-end items-center gap-4">
-                        <div className="flex items-center gap-2">
-                            {Array.from({ length: totalPages }, (_, index) => (
-                                <IconButton key={index + 1} {...getItemProps(index + 1)}>
-                                    {index + 1}
-                                </IconButton>
-                            ))}
-                        </div>
+                    <div className="flex items-center gap-2">
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <IconButton key={index + 1} {...getItemProps(index + 1)}>
+                                {index + 1}
+                            </IconButton>
+                        ))}
                     </div>
+                </div>
             </div>
         </div>
     );
 };
 
-export default NoticeList;
+export default ProductList;

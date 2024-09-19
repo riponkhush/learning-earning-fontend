@@ -15,7 +15,6 @@ const ProductList = () => {
     const [itemsPerPage] = useState(7); 
     const [totalPages, setTotalPages] = useState(1); 
 
-
     const { refetch, data: isProducts = [] } = useQuery({
         queryKey: ["isProducts", active],
         queryFn: async () => {
@@ -28,6 +27,7 @@ const ProductList = () => {
             return sortedData.slice(startIndex, endIndex);
         },
     });
+
 
     const handleDelete = (id) => {
         Swal.fire({
