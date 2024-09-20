@@ -74,6 +74,12 @@ export function Profile() {
                             >
                               Email - {user?.email}
                             </Typography>
+                            <Typography
+                              variant="small"
+                              className=" text-lg text-blue-500 font-bold "
+                            >
+                              {isUser.role}
+                            </Typography>
                           </div>
                         </div>
  

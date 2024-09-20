@@ -121,7 +121,7 @@ const AdminAllUserList = () => {
                             <table className="w-full min-w-[640px] table-auto">
                                 <thead>
                                     <tr>
-                                        {["author", "designation", "status", "action"].map((el) => (
+                                        {["author", "designation", "status","registration date", "action"].map((el) => (
                                             <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
                                                 <Typography
                                                     variant="small"
@@ -162,6 +162,11 @@ const AdminAllUserList = () => {
                                             <td className="py-3 px-5">
                                                 <Typography className="text-xs font-semibold text-blue-gray-600 capitalize">
                                                     {item.status}
+                                                </Typography>
+                                            </td>
+                                            <td className="py-3 px-5">
+                                                <Typography className="text-xs font-semibold text-blue-gray-600 capitalize">
+                                                    {item.createdAt}
                                                 </Typography>
                                             </td>
                                             <td className="py-3 px-5 gap-3">

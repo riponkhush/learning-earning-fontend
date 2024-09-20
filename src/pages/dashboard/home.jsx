@@ -90,8 +90,8 @@ useEffect(() => {
 
             <div className="mt-4">
             <div className="flex justify-between px-6 shadow-lg py-2 rounded-lg items-center bg-gray-200">
-              <p className="capitalize">{isStatus.role}</p>
-              <p className="capitalize">{isStatus.status}</p>
+              <p className="capitalize text-purple-500 font-extrabold">{isStatus.role}</p>
+              <p className="capitalize text-purple-500 font-extrabold bg-blue-100 rounded-full w-32 text-center">{isStatus.status}</p>
             </div>
           <div className="relative mt-2 h-72 w-full overflow-hidden rounded-xl bg-[url('/img/background-image.png')] bg-cover	bg-center">
           <div className="absolute inset-0 h-full w-full bg-blue-600" />

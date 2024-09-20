@@ -49,11 +49,10 @@ const AdminCreateUser = () => {
                 loginEmail: user.email
             }
             axiosPublic.post("/createUsers", userInfo).then((res) => {
-                navigate("/dashboard/user-list");
+                toast.success("User created successfull")
             });
           } catch (error) {
             toast.error("Not create user", error)
-            console.log(error);
           } finally {
             setLoading(false);
           }
