@@ -17,7 +17,7 @@ const MappingStudent = () => {
     const [totalPages, setTotalPages] = useState(1); 
     const [searchTerm, setSearchTerm] = useState('');
     const { refetch, data: users = [] } = useQuery({
-        queryKey: ["users", active],
+        queryKey: ["users", active, searchTerm],
         queryFn: async () => {
           const res = await axiosPublic.get("/councilorMappingStudent");
           const sortedData = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

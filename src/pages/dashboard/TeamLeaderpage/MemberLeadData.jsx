@@ -21,7 +21,7 @@ const MemberLeadData = () => {
 
 
     const { refetch, data: users = [] } = useQuery({
-        queryKey: ["users", user?.email],
+        queryKey: ["users", user?.email, active],
         queryFn: async () => {
             const res = await axiosPublic.get(`/createUsers/?user_email=${user.email}`);
           const sortedData = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

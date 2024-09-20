@@ -18,9 +18,10 @@ const TrainerTeamMember = () => {
     const [active, setActive] = useState(1);
     const [itemsPerPage] = useState(7); 
     const [totalPages, setTotalPages] = useState(1); 
+    const [searchTerm, setSearchTerm] = useState('');
     
       const { refetch, data: users = [] } = useQuery({
-        queryKey: ["users", user?.email],
+        queryKey: ["users", user?.email, active],
         queryFn: async () => {
             const res = await axiosPublic.get(`/trainerMappingTrainer?trainerEmail=${user.email}`)
             const sortedData = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -40,6 +41,9 @@ const TrainerTeamMember = () => {
             setLoading(false);
         })
       },[users])
+
+
+
 
       const next = () => {
         if (active < totalPages) {

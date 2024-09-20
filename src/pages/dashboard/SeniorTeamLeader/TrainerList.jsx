@@ -32,7 +32,7 @@ const TrainerList = () => {
             
             setIsLoading(false);
             return filteredData.slice(startIndex, endIndex);
-        },
+        }
     });
     const next = () => {
         if (active < totalPages) {

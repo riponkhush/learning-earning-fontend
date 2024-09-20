@@ -126,7 +126,7 @@ const TeamMember = () => {
                                                 </td>
                                                 <td className="py-3 px-5 ">
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                <Button size="small" variant="contained" endIcon={<SendIcon />}>Call</Button>
+                                                vfxfgdsff
                                                 </Typography>
                                                 </td>
                                             </tr>)

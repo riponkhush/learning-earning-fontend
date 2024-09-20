@@ -25,7 +25,7 @@ const TrainerInActiveMem = () => {
         })
     },[])
     const { refetch, data: users = [] } = useQuery({
-        queryKey: ["users"],
+        queryKey: ["users", active],
         queryFn: async () => {
             const res = await axiosPublic.get("/createUsers");
             const referData = res.data.filter(userPerson => userPerson.refer_code === logginPerson.refer_code);

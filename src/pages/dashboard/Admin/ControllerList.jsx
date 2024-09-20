@@ -30,7 +30,7 @@ const ControllerList = () => {
             
             setIsLoading(false);
             return filteredData.slice(startIndex, endIndex);
-        },
+        }
     });
     const handleDelete = (id) => {
         Swal.fire({
