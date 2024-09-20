@@ -174,60 +174,66 @@ const ActiveStudentMapping = () => {
                                     <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-96"><Loader></Loader></Typography>
                                 ) : (
                                     <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-                                    <table className="w-full min-w-[640px] table-auto">
-                                        <thead>
-                                            <tr>
-                                                {["author", "designation", "status", "employed", "action", "select"].map((el) => (
-                                                    <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                                                        <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                                                            {el}
-                                                        </Typography>
-                                                    </th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {users.map(item => (
-                                                <tr key={item._id}>
-                                                    <td className="py-3 px-5">
-                                                        <div className="flex items-center gap-4">
-                                                            <Avatar src={item.image} alt="" size="sm" variant="rounded" />
-                                                            <div>
-                                                                <Typography variant="small" color="blue-gray" className="font-semibold">{item.name}</Typography>
-                                                                <Typography className="text-xs font-normal text-blue-gray-500">{item.email}</Typography>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="py-3 px-5">
-                                                        <Typography className="text-xs font-semibold text-blue-gray-600">{item.role}</Typography>
-                                                    </td>
-                                                    <td className="py-3 px-5">
-                                                        <Chip
-                                                            variant="gradient"
-                                                            color={item.status === "active" ? "green" : "blue-gray"}
-                                                            value={item.status === "active" ? "active" : "inactive"}
-                                                            className="py-0.5 px-4 text-[11px] font-medium w-20 text-center"
-                                                        />
-                                                    </td>
-                                                    <td className="py-3 px-5">
-                                                        <Typography className="text-xs font-semibold text-blue-gray-600">date</Typography>
-                                                    </td>
-                                                    <td className="py-3 px-5">
-                                                        <Typography onClick={() => handleDelete(item._id)} as="a" href="#" className="text-xs font-semibold text-blue-gray-600">
-                                                            <button><MdDelete className='text-xl text-red-400' /></button>
-                                                        </Typography>
-                                                    </td>
-                                                    <td className="py-3 px-5">
-                                                        <Checkbox 
-                                                            size="small" 
-                                                            checked={selectedUsers.includes(item._id)}
-                                                            onChange={() => handleUserSelection(item._id)} 
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                        {
+                                            users.length > 0 ? (
+                                                <table className="w-full min-w-[640px] table-auto">
+                                                <thead>
+                                                    <tr>
+                                                        {["author", "designation", "status", "employed", "action", "select"].map((el) => (
+                                                            <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                                                                <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
+                                                                    {el}
+                                                                </Typography>
+                                                            </th>
+                                                        ))}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {users.map(item => (
+                                                        <tr key={item._id}>
+                                                            <td className="py-3 px-5">
+                                                                <div className="flex items-center gap-4">
+                                                                    <Avatar src={item.image} alt="" size="sm" variant="rounded" />
+                                                                    <div>
+                                                                        <Typography variant="small" color="blue-gray" className="font-semibold">{item.name}</Typography>
+                                                                        <Typography className="text-xs font-normal text-blue-gray-500">{item.email}</Typography>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="py-3 px-5">
+                                                                <Typography className="text-xs font-semibold text-blue-gray-600">{item.role}</Typography>
+                                                            </td>
+                                                            <td className="py-3 px-5">
+                                                                <Chip
+                                                                    variant="gradient"
+                                                                    color={item.status === "active" ? "green" : "blue-gray"}
+                                                                    value={item.status === "active" ? "active" : "inactive"}
+                                                                    className="py-0.5 px-4 text-[11px] font-medium w-20 text-center"
+                                                                />
+                                                            </td>
+                                                            <td className="py-3 px-5">
+                                                                <Typography className="text-xs font-semibold text-blue-gray-600">date</Typography>
+                                                            </td>
+                                                            <td className="py-3 px-5">
+                                                                <Typography onClick={() => handleDelete(item._id)} as="a" href="#" className="text-xs font-semibold text-blue-gray-600">
+                                                                    <button><MdDelete className='text-xl text-red-400' /></button>
+                                                                </Typography>
+                                                            </td>
+                                                            <td className="py-3 px-5">
+                                                                <Checkbox 
+                                                                    size="small" 
+                                                                    checked={selectedUsers.includes(item._id)}
+                                                                    onChange={() => handleUserSelection(item._id)} 
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                            ) :(
+                                                <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-96">You have no students.</Typography>
+                                            )
+                                        }
                                 </CardBody>
                                 )
                             }

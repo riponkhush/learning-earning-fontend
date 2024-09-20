@@ -17,7 +17,7 @@ const TeamMember = () => {
       const { refetch, data: users = [] } = useQuery({
         queryKey: ["users", user?.email],
         queryFn: async () => {
-            const res = await axiosPublic.get(`/seniorTeamMappingMember?seniorLeaderEmail=${user.email}`)
+            const res = await axiosPublic.get(`/seniorTeamMappingMember?senionLeaderEmail=${user.email}`)
           console.log(res.data)
           setLoading(false)
           return (res.data)
@@ -25,15 +25,20 @@ const TeamMember = () => {
       });
 
       useEffect(() => {
-        axiosPublic.get('/createUsers')
-            .then(res => {
-                const filteredData = res.data.filter(item => 
-                    users.some(user => user.seniorLeaderId && user.seniorLeaderId.includes(item._id))  // Check if trainerId exists
-                );
-                console.log(filteredData);
-                setIsMan(filteredData);
-                setLoading(false);
-            })
+        if (users.length > 0) {  // Ensure 'users' has data
+            axiosPublic.get('/createUsers')
+                .then(res => {
+                    const filteredData = res.data.filter(item =>
+                        users.some(user => Array.isArray(user.seniorLeaderId) && user.seniorLeaderId.includes(item._id))
+                    );
+                    setIsMan(filteredData); 
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error fetching createUsers:', error);
+                    setLoading(false);
+                });
+        }
     }, [users]);
     
 

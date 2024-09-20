@@ -80,7 +80,7 @@ const ActiveUser = () => {
                     </div>
                 </CardHeader>
 
-                        <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+            <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                         {isLoading ? (
                     <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-screen"><Spinner className="h-10 w-10" color="blue" /></Typography>
 
@@ -158,7 +158,7 @@ const ActiveUser = () => {
                         ) : (
                             <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-96">You have no students.</Typography>
                         )}
-                </CardBody>
+            </CardBody>
 
             </Card>
             <div className="flex justify-end items-center gap-4">

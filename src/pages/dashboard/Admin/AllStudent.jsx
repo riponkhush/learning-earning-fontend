@@ -27,7 +27,10 @@ const AllStudent = () => {
             return sortedData.slice(startIndex, endIndex);
         },
     });
-    const filteredUsers = users.filter(user => user.refer_code?.toString().includes(searchTerm.toLowerCase()));
+    const filteredUsers = users.filter(user => 
+        user.refer_code && user.refer_code.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
 
 
     const {  data: studentTeamLeader = [] } = useQuery({
@@ -112,79 +115,85 @@ const AllStudent = () => {
                         isLoading ? (
                             <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-screen"><Spinner className="h-10 w-10" color="blue" /></Typography>                         ) : (
                             <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-                            <table className="w-full min-w-[640px] table-auto">
-                                <thead>
-                                    <tr>
-                                        {["author", "designation","team leader", "trainer","refer code", "councilor", "whatsapp", "date"].map((el) => (
-                                            <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                                                <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                                                    {el}
-                                                </Typography>
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredUsers.map(item => (
-                                        <tr key={item._id} className=''>
-                                            <td className="py-3 px-5">
-                                                <div className="flex items-center gap-4">
-                                                    <Avatar src={item.image} alt="" size="sm" variant="rounded" />
-                                                    <div>
-                                                        <Typography variant="small" color="blue-gray" className="font-semibold">{item.name}</Typography>
-                                                        <Typography className="text-xs font-normal text-blue-gray-500">{item.email}</Typography>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-5">
-                                                <Typography className="text-xs font-semibold text-blue-gray-600">{item.role}</Typography>
-                                            </td>
-
-                                            <td className="py-8">
-                                                <div className="relative group">
-                                                    <Typography className="text-xs font-semibold text-blue-gray-600 cursor-pointer">
-                                                        Team leader
-                                                    </Typography>
-                                                    <div className="absolute hidden group-hover:block bg-gray-100 text-xs font-semibold text-blue-gray-600 rounded p-2 shadow-lg">
-                                                        {ownTeamLeaderforStudent(item._id)}
-                                                    </div>
-                                                </div>
-                                             </td>
-                                            <td className="py-8">
-                                                <div className="relative group">
-                                                    <Typography className="text-xs font-semibold text-blue-gray-600 cursor-pointer">
-                                                        Trainer
-                                                    </Typography>
-                                                    <div className="absolute hidden group-hover:block bg-gray-100 text-xs font-semibold text-blue-gray-600 rounded p-2 shadow-lg">
-                                                        {ownTrainerforStudent(item._id)}
-                                                    </div>
-                                                </div>
-                                             </td>
-
-                                            
-                                            <td className="py-3 px-5">
-                                                <Typography className="text-xs font-semibold text-blue-gray-600">{item.refer_code}</Typography>
-                                            </td>
-                                            <td className="py-8">
-                                                <div className="relative group">
-                                                    <Typography className="text-xs font-semibold text-blue-gray-600 cursor-pointer">
-                                                        Councilor
-                                                    </Typography>
-                                                    <div className="absolute hidden group-hover:block bg-gray-100 text-xs font-semibold text-blue-gray-600 rounded p-2 shadow-lg">
-                                                        {ownCouncilorforStudent(item._id)}
-                                                    </div>
-                                                </div>
-                                             </td>
-                                            <td className="py-3 px-5">
-                                                <Typography className="text-xs font-semibold text-blue-gray-600">{item.number}</Typography>
-                                            </td>
-                                            <td className="py-3 px-5">
-                                                <Typography className="text-xs font-semibold text-blue-gray-600">{item.createdAt}</Typography>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                {
+                                    filteredUsers.length > 0 ? (
+                                        <table className="w-full min-w-[640px] table-auto">
+                                        <thead>
+                                            <tr>
+                                                {["author", "designation","team leader", "trainer","refer code", "councilor", "whatsapp", "date"].map((el) => (
+                                                    <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                                                        <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
+                                                            {el}
+                                                        </Typography>
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredUsers.map(item => (
+                                                <tr key={item._id} className=''>
+                                                    <td className="py-3 px-5">
+                                                        <div className="flex items-center gap-4">
+                                                            <Avatar src={item.image} alt="" size="sm" variant="rounded" />
+                                                            <div>
+                                                                <Typography variant="small" color="blue-gray" className="font-semibold">{item.name}</Typography>
+                                                                <Typography className="text-xs font-normal text-blue-gray-500">{item.email}</Typography>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="py-3 px-5">
+                                                        <Typography className="text-xs font-semibold text-blue-gray-600">{item.role}</Typography>
+                                                    </td>
+        
+                                                    <td className="py-8">
+                                                        <div className="relative group">
+                                                            <Typography className="text-xs font-semibold text-blue-gray-600 cursor-pointer">
+                                                                Team leader
+                                                            </Typography>
+                                                            <div className="absolute hidden group-hover:block bg-gray-100 text-xs font-semibold text-blue-gray-600 rounded p-2 shadow-lg">
+                                                                {ownTeamLeaderforStudent(item._id)}
+                                                            </div>
+                                                        </div>
+                                                     </td>
+                                                    <td className="py-8">
+                                                        <div className="relative group">
+                                                            <Typography className="text-xs font-semibold text-blue-gray-600 cursor-pointer">
+                                                                Trainer
+                                                            </Typography>
+                                                            <div className="absolute hidden group-hover:block bg-gray-100 text-xs font-semibold text-blue-gray-600 rounded p-2 shadow-lg">
+                                                                {ownTrainerforStudent(item._id)}
+                                                            </div>
+                                                        </div>
+                                                     </td>
+        
+                                                    
+                                                    <td className="py-3 px-5">
+                                                        <Typography className="text-xs font-semibold text-blue-gray-600">{item.refer_code}</Typography>
+                                                    </td>
+                                                    <td className="py-8">
+                                                        <div className="relative group">
+                                                            <Typography className="text-xs font-semibold text-blue-gray-600 cursor-pointer">
+                                                                Councilor
+                                                            </Typography>
+                                                            <div className="absolute hidden group-hover:block bg-gray-100 text-xs font-semibold text-blue-gray-600 rounded p-2 shadow-lg">
+                                                                {ownCouncilorforStudent(item._id)}
+                                                            </div>
+                                                        </div>
+                                                     </td>
+                                                    <td className="py-3 px-5">
+                                                        <Typography className="text-xs font-semibold text-blue-gray-600">{item.number}</Typography>
+                                                    </td>
+                                                    <td className="py-3 px-5">
+                                                        <Typography className="text-xs font-semibold text-blue-gray-600">{item.createdAt}</Typography>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    ) :(
+                                        <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-96">You have no students.</Typography>
+                                    )
+                                }
                         </CardBody>
                         )
                     }

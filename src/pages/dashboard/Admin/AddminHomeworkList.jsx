@@ -109,46 +109,52 @@ const AddminHomeworkList = () => {
                                 <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-96"><Loader></Loader></Typography>
                             ) : (
                                 <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-                                <table className="w-full min-w-[640px] table-auto">
-                                    <thead>
-                                        <tr>
-                                            {["homework", "category", "posted man", "Date", "action"].map((el) => (
-                                                <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
-                                                    <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
-                                                        {el}
-                                                    </Typography>
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {isCourses.map(item => (
-                                            <tr key={item._id}>
-                                                <td className="py-3 px-5">
-                                                    <div className="flex items-center gap-4">
-                                                        <div>
-                                                            <Typography variant="small" color="blue-gray" className="font-semibold capitalize">{item.homework}</Typography>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="py-3 px-5">
-                                                    <Typography className="text-xs font-semibold text-blue-gray-600">{item.category}</Typography>
-                                                </td>
-                                                <td className="py-3 px-5">
-                                                <Typography className="text-xs font-semibold text-blue-gray-600">{item.userEmail}</Typography>
-                                                </td>
-                                                <td className="py-3 px-5">
-                                                    <Typography className="text-xs font-semibold text-blue-gray-600">{item.createdAt}</Typography>
-                                                </td>
-                                                <td className="py-3 px-5">
-                                                <Typography  onClick={() =>handleDelete(item._id)} className="text-xs font-semibold text-blue-gray-600">
-                                                        <button className='bg-red-400 px-6 text-white rounded-full hover:bg-red-600 duration-500 shadow-md drop-shadow-xl'>Delete</button>
-                                                    </Typography>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                    {
+                                        isCourses.length > 0 ? (
+                                            <table className="w-full min-w-[640px] table-auto">
+                                            <thead>
+                                                <tr>
+                                                    {["homework", "category", "posted man", "Date", "action"].map((el) => (
+                                                        <th key={el} className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                                                            <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
+                                                                {el}
+                                                            </Typography>
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {isCourses.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="py-3 px-5">
+                                                            <div className="flex items-center gap-4">
+                                                                <div>
+                                                                    <Typography variant="small" color="blue-gray" className="font-semibold capitalize">{item.homework}</Typography>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="py-3 px-5">
+                                                            <Typography className="text-xs font-semibold text-blue-gray-600">{item.category}</Typography>
+                                                        </td>
+                                                        <td className="py-3 px-5">
+                                                        <Typography className="text-xs font-semibold text-blue-gray-600">{item.userEmail}</Typography>
+                                                        </td>
+                                                        <td className="py-3 px-5">
+                                                            <Typography className="text-xs font-semibold text-blue-gray-600">{item.createdAt}</Typography>
+                                                        </td>
+                                                        <td className="py-3 px-5">
+                                                        <Typography  onClick={() =>handleDelete(item._id)} className="text-xs font-semibold text-blue-gray-600">
+                                                                <button className='bg-red-400 px-6 text-white rounded-full hover:bg-red-600 duration-500 shadow-md drop-shadow-xl'>Delete</button>
+                                                            </Typography>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        ) :(
+                                            <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-96">You have no homeowrk.</Typography>
+                                        )
+                                    }
                             </CardBody>
                             )
                         }
