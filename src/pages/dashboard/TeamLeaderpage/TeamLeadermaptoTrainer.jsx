@@ -10,7 +10,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Swal from 'sweetalert2';
 import { IconButton } from "@material-tailwind/react";
 
-const TmLeaderTrainer = () => {
+const TeamLeadermaptoTrainer = () => {
     const axiosPublic = useAxiosPublic();
     const {user} = useContext((AuthContext));
     const [loading , setLoading] = useState(true);
@@ -19,19 +19,45 @@ const TmLeaderTrainer = () => {
     const [active, setActive] = useState(1);
     const [itemsPerPage] = useState(7); 
     const [totalPages, setTotalPages] = useState(1); 
+    const [ tariners, setTrainer] = useState([]);
+    const [isMan, setIsMan] = useState([]);
 
-    const { refetch, data: users = [] } = useQuery({
-        queryKey: ["users", user?.email, active],
+    const {refetch,  data: users = [] } = useQuery({
+        queryKey: ["users", user?.email],
         queryFn: async () => {
-            const res = await axiosPublic.get(`/createUsers/?loginEmail=${user.email}`);
-          const sortedData = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const res = await axiosPublic.get(`/teamLeaderMappingMember?teamLeaderEmail=${user.email}`)
           setLoading(false);
-          setTotalPages(Math.ceil(sortedData.length / itemsPerPage));
-          const startIndex = (active - 1) * itemsPerPage;
-          const endIndex = startIndex + itemsPerPage;
-          return sortedData.slice(startIndex, endIndex);
+          return res.data;
         },
       });
+
+      useEffect(() => {
+         axiosPublic.get('/createUsers')
+                .then(res => {
+                    console.log(res.data)
+                    const filteredData = res.data.filter(item => 
+                        users.some(user => Array.isArray(user.studentId) && user.studentId?.includes(item._id))
+                    );
+                    setIsMan(filteredData)
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error fetching createUsers:', error);
+                    setLoading(false);
+                });
+    }, []);
+
+
+
+
+      useEffect(() => {
+        axiosPublic.get('/createUsers')
+        .then(res => {
+            const filterTrainer = res.data.filter(man => man.role === 'Trainer');
+            const sortedData = filterTrainer.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            setTrainer(sortedData)
+        })
+      },[])
 
       const handleLeaderChange = (email) => {
         refetch();
@@ -47,7 +73,7 @@ const TmLeaderTrainer = () => {
 
     const handlePostToLeader = () => {
         if (!selectedLeader) {
-            Swal.fire("Please select a senior team leader!");
+            Swal.fire("Please select a team leader!");
             return;
         }
 
@@ -58,7 +84,7 @@ const TmLeaderTrainer = () => {
         setLoading(true);
 
         
-        axiosPublic.post('/trainerMappingTrainer', { trainerEmail: selectedLeader, trainerId: selectedUsers , loggedInUserEmail: user.email })
+        axiosPublic.post('/teamLeaderMappingTrainer', { teamLeaderEmail: selectedLeader, trainerId: selectedUsers , loggedInUserEmail: user.email })
             .then(response => {
                 Swal.fire("Success", "Users have been assigned to the leader!", "success");
                 setSelectedUsers([]);
@@ -94,10 +120,7 @@ const TmLeaderTrainer = () => {
 
     return (
         <div>
-            {
-                loading ? (
-                    <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-screen"><Spinner className="h-10 w-10" color="blue" /></Typography>
-                ) : (
+
                     <div className="mt-12 mb-8 flex flex-col gap-12">
                     <Card>
                         <CardHeader className="mb-8 p-6 bg-blue-500">
@@ -121,20 +144,24 @@ const TmLeaderTrainer = () => {
                         </CardHeader>
                         <div className='flex justify-between gap-1 items-center md:py-3 md:px-5 px-2'>
                                     <div className="md:w-72">
-                                        <Select className='' label="Select Trainer" onChange={(value) => handleLeaderChange(value)} >
-                                            {users.map(item => <Option className='text-black' key={item._id} value={item.email}>{item.name} trainer
+                                        <Select className='' label="Select Team Leader" onChange={(value) => handleLeaderChange(value)} >
+                                            {isMan.map(item => <Option className='text-black' key={item._id} value={item.email}>{item.name}
                                                 
                                             </Option>)}
                                         </Select>
                                     </div>
-                                    <button type='submit' className=" flex items-center gap-2 p-2 bg-blue-500 text-xs text-white rounded" 
+                                    <button type='submit' className=" flex items-center w-44 gap-2 p-2 bg-blue-500 text-xs text-white rounded" 
                                     onClick={handlePostToLeader}>
-                                            Assign to Trainer {loading && <Spinner className="h-4 w-4" />}
+                                            Assign to Team Leader {loading && <Spinner className="h-4 w-4" />}
                                     </button>
                                 </div>
+                                {
+                loading ? (
+                    <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-screen"><Spinner className="h-10 w-10" color="blue" /></Typography>
+                ) : (
                         <CardBody className="overflow-x-scroll md:px-10 px-0 pt-0 pb-2">
                             {
-                                users.length > 0 ? (
+                                tariners.length > 0 ? (
                                     <table className="w-full min-w-[640px] table-auto">
                                     <thead>
                                         <tr>
@@ -155,7 +182,7 @@ const TmLeaderTrainer = () => {
                                     </thead>
                                     <tbody className=''>
                                         {
-                                            users.map((item) =>                             
+                                            tariners.map((item) =>                             
                                             <tr key={item}>
                                             <td className="py-3 px-5">
                                             <div className="flex items-center gap-4">
@@ -201,6 +228,8 @@ const TmLeaderTrainer = () => {
                                 )
                             }
                         </CardBody>
+                                        )
+                                }
                     </Card>
                     <div className="flex justify-end items-center gap-4">
                         <div className="flex items-center gap-2">
@@ -212,10 +241,9 @@ const TmLeaderTrainer = () => {
                         </div>
                      </div>
                 </div>
-                )
-            }
+
         </div>
     );
 };
 
-export default TmLeaderTrainer;
+export default TeamLeadermaptoTrainer;

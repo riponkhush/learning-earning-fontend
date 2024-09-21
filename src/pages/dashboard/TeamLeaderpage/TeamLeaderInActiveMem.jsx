@@ -22,8 +22,7 @@ const TeamLeaderInActiveMem = () => {
         queryKey: ["users",active, searchTerm],
         queryFn: async () => {
             const res = await axiosPublic.get("/createUsers");
-            const referData = res.data.filter(userPerson => userPerson.refer_code === logginPerson.refer_code);
-            const inActiveuser = referData.filter(activeUser => activeUser.status === "in active");
+            const inActiveuser = res.data.filter(inactiveUser => inactiveUser.status === "in active" && inactiveUser.role === "Trainer");
             const sortedData = inActiveuser.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             const filteredData = sortedData.filter(user => 
                 user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||

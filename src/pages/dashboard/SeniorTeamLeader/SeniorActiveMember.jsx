@@ -1,60 +1,60 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { CardHeader, Spinner, Typography } from "@material-tailwind/react";
 import { FaSearch } from "react-icons/fa";
-import { Card,CardBody,Avatar, Spinner} from "@material-tailwind/react";
-import useAxiosPublic from './../../../hooks/axiosPublic';
-import { AuthContext } from '@/providers/AuthProvider';
-import { CardHeader, Typography } from "@material-tailwind/react";
+import { Card, CardBody, Avatar, Chip } from "@material-tailwind/react";
+import useAxiosPublic from '@/hooks/axiosPublic';
 import { useQuery } from 'react-query';
 import { IconButton } from "@material-tailwind/react";
+import { AuthContext } from '@/providers/AuthProvider';
 
-const MappingMember = () => {
+const SeniorActiveMember = () => {
     const axiosPublic = useAxiosPublic();
+    const {user} = useContext(AuthContext);
     const [isMan, setIsMan] = useState([]);
-    const [loading , setLoading] = useState(true);
-    const {user} = useContext((AuthContext));
+    const [isLoading, setIsLoading] = useState(true);
     const [active, setActive] = useState(1);
     const [itemsPerPage] = useState(7); 
     const [totalPages, setTotalPages] = useState(1); 
     const [searchTerm, setSearchTerm] = useState('');
-
     const {  data: users = [] } = useQuery({
         queryKey: ["users", user?.email, active],
         queryFn: async () => {
-            const res = await axiosPublic.get(`/controllerMappingData?councilorEmail=${user.email}`)
-            console.log(res.data)
+            const res = await axiosPublic.get(`/seniorTeamMappingMember?senionLeaderEmail=${user.email}`)
           const sortedData = res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          setLoading(false);
+          setIsLoading(false);
           setTotalPages(Math.ceil(sortedData.length / itemsPerPage));
           const startIndex = (active - 1) * itemsPerPage;
           const endIndex = startIndex + itemsPerPage;
           return sortedData.slice(startIndex, endIndex);
         },
       });
-
-
+      
       useEffect(() => {
         if (users.length > 0) {
             axiosPublic.get('/createUsers')
                 .then(res => {
                     const filteredData = res.data.filter(item => 
-                        users.some(user => Array.isArray(user.councilorId) && user.councilorId?.includes(item._id))
+                        users.some(user => Array.isArray(user.seniorLeaderId) && user.seniorLeaderId?.includes(item._id))
                     );
-                    const searchFilteredData = filteredData.filter(item =>
+                    const activeUserMan = filteredData.filter(man => man.status === "active")
+                    const searchFilteredData = activeUserMan.filter(item =>
                         item.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
                         item.email?.toLowerCase().includes(searchTerm.toLowerCase())  
                     );
                     setIsMan(searchFilteredData); 
-                    setLoading(false);
+                    setIsLoading(false);
                 })
                 .catch(error => {
                     console.error('Error fetching createUsers:', error);
-                    setLoading(false);
+                    setIsLoading(false);
                 });
         }
-    }, []);
+    }, [users, searchTerm]);
 
 
-      const next = () => {
+
+
+    const next = () => {
         if (active < totalPages) {
             setActive(active + 1);
         }
@@ -74,7 +74,7 @@ const MappingMember = () => {
     return (
         <div>
         {
-            loading ? (
+            isLoading ? (
                 <Typography className="text-center text-4xl text-blue-gray-500 flex justify-center items-center h-screen"><Spinner className="h-10 w-10" color="blue" /></Typography>
             ) : (
                 <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -82,7 +82,7 @@ const MappingMember = () => {
                     <CardHeader className="mb-8 p-6 bg-blue-500">
                     <div className='flex justify-between items-center'>
                             <Typography variant="h6" color="white">
-                            Team Member
+                            Active Member
                             </Typography>
                             <div id="input" className="relative outline-none">
                             <input
@@ -173,8 +173,8 @@ const MappingMember = () => {
             </div> 
             )
         }
-    </div>
+        </div>
     );
 };
 
-export default MappingMember;
+export default SeniorActiveMember;

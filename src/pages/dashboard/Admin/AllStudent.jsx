@@ -27,9 +27,11 @@ const AllStudent = () => {
             return sortedData.slice(startIndex, endIndex);
         },
     });
-    const filteredUsers = users.filter(user => 
-        user.refer_code && user.refer_code.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    );
+
+const filteredUsers = users.filter(user => 
+    user.refer_code && user.refer_code.toString().toLowerCase().includes(searchTerm.toLowerCase())
+);
+
     
 
 

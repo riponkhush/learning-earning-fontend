@@ -93,6 +93,58 @@ const SeniorteamLeaders = () => {
                 </NavLink>
         </li>
         <li>
+                <NavLink to='/dashboard/senior-active-member'>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color={
+                        isActive
+                          ? "blue"
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                        <GiTeamIdea />
+                      <Typography
+                        color="inherit"
+                        className="font-medium text-sm capitalize"
+                      >
+                        active member
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+        </li>
+        <li>
+                <NavLink to='/dashboard/senior-inactive-member'>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color={
+                        isActive
+                          ? "blue"
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                        <GiTeamIdea />
+                      <Typography
+                        color="inherit"
+                        className="font-medium text-sm capitalize"
+                      >
+                        in active member
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+        </li>
+        <li>
                 <NavLink to='/dashboard/passbook'>
                   {({ isActive }) => (
                     <Button

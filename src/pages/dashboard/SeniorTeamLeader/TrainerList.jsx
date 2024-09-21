@@ -52,6 +52,24 @@ const TrainerList = () => {
         onClick: () => setActive(index),
     });
 
+    const {  data: trainerTeamLeader = [] } = useQuery({
+        queryKey: ["users"],
+        queryFn: async () => {
+            const res = await axiosPublic.get("/teamLeaderMappingTrainer");
+            console.log(res.data)
+            setIsLoading (false)
+            return res.data
+        },
+    });
+    const ownTeamLeaderforStudent = (trainerId) => {
+        const teamLeader = trainerTeamLeader.find(leader => 
+            Array.isArray(leader.trainerId) && leader.trainerId.includes(trainerId)
+        );
+        return teamLeader ? teamLeader.teamLeaderEmail : "No Team Leader";
+    }
+    
+
+
     return (
         <div>
             {
@@ -123,11 +141,16 @@ const TrainerList = () => {
                                                     <td className="py-3 px-5">
                                                         <Typography className="text-xs font-semibold text-blue-gray-600">{item.createdAt}</Typography>
                                                     </td>
-                                                    <td className="py-3 px-5">
-                                                    <Typography  onClick={() =>handleDelete(item._id)} className="text-xs font-semibold text-blue-gray-600">
-                                                            <button className='bg-purple-400 px-6 text-white rounded-full hover:bg-purple-600 duration-500 shadow-md drop-shadow-xl'>Team Leader</button>
-                                                        </Typography>
-                                                    </td>
+                                                    <td className="py-8">
+                                                        <div className="relative group">
+                                                            <Typography className="text-xs font-semibold text-blue-gray-600 cursor-pointer">
+                                                                Team leader
+                                                            </Typography>
+                                                            <div className="absolute hidden group-hover:block bg-gray-100 text-xs font-semibold text-blue-gray-600 rounded p-2 shadow-lg">
+                                                                {ownTeamLeaderforStudent(item._id)}
+                                                            </div>
+                                                        </div>
+                                                     </td>
                                                 </tr>
                                             ))}
                                         </tbody>

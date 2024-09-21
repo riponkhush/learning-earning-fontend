@@ -119,7 +119,6 @@ const Councilor = () => {
                   )}
                 </NavLink>
           </li>
-
           <li>
                 <NavLink to='/dashboard/councilor-active-member'>
                   {({ isActive }) => (

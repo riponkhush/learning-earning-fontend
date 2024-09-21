@@ -13,7 +13,6 @@ import Mypassbook from "./pages/dashboard/mypassbook";
 import Marketing from "./pages/dashboard/Marketing";
 import Home from "./pages/dashboard/Home";
 import Profile from "./pages/dashboard/Profile";
-import Notifications from "./pages/dashboard/Notifications";
 import PhotoGallary from "./pages/dashboard/PhotoGallary";
 import CreateUser from "./pages/dashboard/Manager/CreateUser";
 import Account from "./pages/dashboard/Admin/Account";
@@ -25,7 +24,6 @@ import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import UploadImage from "./pages/dashboard/UploadImage";
 import Passbook from "./pages/dashboard/SeniorTeamLeader/Passbook";
 import TeamMember from "./pages/dashboard/SeniorTeamLeader/TeamMember";
-
 import ReferenceMember from "./pages/dashboard/SeniorTeamLeader/ReferenceMember";
 import TeamLeadedId from "./pages/dashboard/SeniorTeamLeader/TeamLeadedId";
 import TeamLeadedList from "./pages/dashboard/SeniorTeamLeader/TeamLeadedList";
@@ -83,6 +81,10 @@ import AdminAllUserList from "./pages/dashboard/Admin/AdminAllUserList";
 import AdminCreateUser from "./pages/dashboard/Admin/AdminCreateUser";
 import CreateSeniorTeamLeader from "./pages/dashboard/Councilor/CreateSeniorTeamLeader";
 import CreatTeamLeader from "./pages/dashboard/SeniorTeamLeader/CreatTeamLeader";
+import SeniorActiveMember from "./pages/dashboard/SeniorTeamLeader/SeniorActiveMember";
+import SeniorInActiveMem from "./pages/dashboard/SeniorTeamLeader/SeniorInActiveMem";
+import TeamLeadermaptoTrainer from "./pages/dashboard/TeamLeaderpage/TeamLeadermaptoTrainer";
+import Reference from "./pages/dashboard/Reference";
 
 
 const icon = {
@@ -145,7 +147,7 @@ export const routes = [
       {
         name: "reference",
         path: "/reference",
-        element: <PrivateRoute><Notifications /></PrivateRoute>,
+        element: <PrivateRoute><Reference></Reference></PrivateRoute>,
       },
       // admin
       {
@@ -480,6 +482,22 @@ export const routes = [
         path: "/create-team-leader",
         element: <PrivateRoute><CreatTeamLeader></CreatTeamLeader></PrivateRoute>,
       },
+      {
+        name: "senior active member",
+        path: "/senior-active-member",
+        element: <PrivateRoute><SeniorActiveMember></SeniorActiveMember></PrivateRoute>,
+      },
+      {
+        name: "senior inactive member",
+        path: "/senior-inactive-member",
+        element: <PrivateRoute><SeniorInActiveMem></SeniorInActiveMem></PrivateRoute>,
+      },
+      {
+        name: "trainer map to teamleader",
+        path: "/trainer-map-to-teamleader",
+        element: <PrivateRoute><TeamLeadermaptoTrainer></TeamLeadermaptoTrainer></PrivateRoute>,
+      },
+
 
     ],
   },

@@ -115,6 +115,32 @@ const TeamLeader = () => {
                 </NavLink>
           </li>
           <li>
+                <NavLink to='/dashboard/trainer-map-to-teamleader'>
+                  {({ isActive }) => (
+                    <Button
+                      variant={isActive ? "gradient" : "text"}
+                      color={
+                        isActive
+                          ? "blue"
+                          : sidenavType === "dark"
+                          ? "white"
+                          : "blue-gray"
+                      }
+                      className="flex items-center gap-4 px-4 capitalize"
+                      fullWidth
+                    >
+                      <FaHome />
+                      <Typography
+                        color="inherit"
+                        className="font-medium text-sm capitalize"
+                      >
+                        leader to trainer map
+                      </Typography>
+                    </Button>
+                  )}
+                </NavLink>
+          </li>
+          <li>
                 <NavLink to='/dashboard/team-leader-active-member'>
                   {({ isActive }) => (
                     <Button

@@ -15,6 +15,7 @@ const TeamLeaderMember = () => {
     const [itemsPerPage] = useState(7); 
     const [totalPages, setTotalPages] = useState(1); 
     const [searchTerm, setSearchTerm] = useState('');
+
     const {  data: users = [] } = useQuery({
         queryKey: ["users", user?.email, active],
         queryFn: async () => {
@@ -48,7 +49,7 @@ const TeamLeaderMember = () => {
                     setLoading(false);
                 });
         }
-    }, [users, searchTerm]);
+    }, []);
 
 
       const next = () => {
@@ -68,6 +69,7 @@ const TeamLeaderMember = () => {
         color: "blue",
         onClick: () => setActive(index),
     });
+    
     return (
             <div>
                 {
